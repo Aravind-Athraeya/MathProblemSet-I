@@ -1,0 +1,60 @@
+// ConsoleApplication2.cpp : Defines the entry point for the console application.
+//
+#include "stdafx.h"
+#include <set>
+#include <iostream>
+#include<conio.h>
+#include <sstream>
+#include<stdio.h>
+#include<stdlib.h>
+#include <queue>
+#include <unordered_set>
+
+using namespace std;
+void SieveOfEratosthenes(int n)
+{
+
+	bool isPrime[30] = { 1 };
+
+	//n = a * b
+	//If both a and b were greater than the square root of n, 
+	//then a * b would be greater than n. So at least one of those factors must be less than or equal to the 
+	//square root of n, and if we can't find any factors less than or equal to the square root, n must be prime.
+	//So P * P = n, because  p = Sqrt(n)
+	// Atleast one facetor must be lower than Sqrt(n)
+	for (int p = 2; p*p <= n; p++)  //  Start from 2 because 1 is a factor
+	{
+		if (isPrime[p - 1])
+		{
+			isPrime[p - 1] = false;
+
+			for (int q = 2; (q >= p) && (q * p <= n); q++)  //  Start from 2 because 1 is a factor -- Multiplicate factors
+			{
+				isPrime[(q * p) - 1] = false;
+			}
+		
+		}
+
+
+	}
+
+
+	// Print
+
+	for (int p = 2; p <= n; p++)
+	if (isPrime[p - 1])
+		cout << p << " ";
+
+}
+
+
+int main()
+{
+
+	int n = 30;
+	SieveOfEratosthenes(n);
+	return 0;
+
+
+
+}
