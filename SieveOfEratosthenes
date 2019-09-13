@@ -14,7 +14,8 @@ using namespace std;
 void SieveOfEratosthenes(int n)
 {
 
-	bool isPrime[30] = { 1 };
+	bool isPrime[31]; // ading one entry to handle index and number together
+	memset(isPrime, true, sizeof(isPrime)); // Set memory
 
 	//n = a * b
 	//If both a and b were greater than the square root of n, 
@@ -24,13 +25,13 @@ void SieveOfEratosthenes(int n)
 	// Atleast one facetor must be lower than Sqrt(n)
 	for (int p = 2; p*p <= n; p++)  //  Start from 2 because 1 is a factor
 	{
-		if (isPrime[p - 1])
+		if (isPrime[p])
 		{
-			isPrime[p - 1] = false;
-
-			for (int q = 2; (q >= p) && (q * p <= n); q++)  //  Start from 2 because 1 is a factor -- Multiplicate factors
+			int q = 2;
+			while((q * p <= n))  //  Start from 2 because 1 is a factor -- Multiplicate factors
 			{
-				isPrime[(q * p) - 1] = false;
+				isPrime[(q * p)] = false;
+				q++;
 			}
 		
 		}
@@ -42,7 +43,7 @@ void SieveOfEratosthenes(int n)
 	// Print
 
 	for (int p = 2; p <= n; p++)
-	if (isPrime[p - 1])
+	if (isPrime[p])
 		cout << p << " ";
 
 }
