@@ -29,7 +29,7 @@ struct Point
 
 
 
-// 0 --> p, q and r are colinear 
+// 0 --> p, q and r are colinear  -- P - current , Q - iteative other points  , R
 // 1 --> Clockwise 
 // 2 --> Counterclockwise
 int orientation(Point p, Point q, Point r)
@@ -44,59 +44,50 @@ int orientation(Point p, Point q, Point r)
 	return (val > 0) ? 1 : 2; // clock or counterclock wise 
 
 }
-
-vector<Point> convexHull(Point points[], int n)
+void convexHull(Point points[], int n)
 {
+	// There must be at least 3 points 
+	if (n < 3) return;
 
-	// Step 1  - find theelft most point
-	int left = 0;
+	// Initialize Result 
+	vector<Point> hull;
 
-	vector<Point> ConvexHull;
-
-
-
+	// Find the leftmost point 
+	int l = 0;
 	for (int i = 1; i < n; i++)
-	if (points[i].x < points[left].x)
-		left = i;
-	ConvexHull.push_back(points[left]);
-	// Step 2
-	Point current = points[left];
-	while (true) {
-		
-		Point nextTarget = points[0]; //Choose a random point
+	if (points[i].x < points[l].x)
+		l = i;
 
-	
-		//Three points are current, next , iterative point
-		for (int i = 1; i < n; i++) {
-			if ((current.x == points[i].x) && (current.y == points[i].y))     //when selected point is current point, ignore rest part
-				continue;
+	// Start from leftmost point, keep moving counterclockwise 
+	// until reach the start point again.  This loop runs O(h) 
+	// times where h is number of points in result or output. 
+	int p = l, q;
+	do
+	{
+		// Add current point to result 
+		hull.push_back(points[p]);
 
-			int val = orientation(current, nextTarget, points[i]);
-
-		//	The next target q is the point such that the triplet(p, q, r) is counterclockwise for any other point r
-
-			if (val == 2) //// If i is more counterclockwise than current q, then 
-           // update nextTarget 
-			{		     
-				nextTarget = points[i];
-			}
-			
+		//This logic will get you the index of the any other point except the current one, since n > p,q
+		q = (p + 1) % n;
+		for (int i = 0; i < n; i++)
+		{
+			// If i is more counterclockwise than current q, then 
+			// update q 
+			if (orientation(points[p], points[i], points[q]) == 2)
+				q = i;
 		}
 
-		 // Make next as the current now
+		// Now q is the most counterclockwise with respect to p 
+		// Set p as q for next iteration, so that q is added to 
+		// result 'hull' 
+		p = q;
 
-		current = nextTarget;
-		ConvexHull.push_back(current);
+	} while (p != l);  // While we don't come to first point 
 
-		// break
-		if  ((current.x == points[left].x) && (current.y == points[left].y)) // By the first iteration current wont be the left most
-			break;
-		// Hull completed
-	}
-
-
-
-	return ConvexHull;
+	// Print Result 
+	for (int i = 0; i < hull.size(); i++)
+		cout << "(" << hull[i].x << ", "
+		<< hull[i].y << ")\n";
 }
 
 
@@ -108,13 +99,9 @@ int main()
 	{ 3, 0 }, { 0, 0 }, { 3, 3 } };
 
 	int n = sizeof(points) / sizeof(points[0]);
-	vector<Point> hull = convexHull(points, n);
+    convexHull(points, n);
 
 
-	// Print Result 
-	for (int i = 0; i < hull.size(); i++)
-		cout << "(" << hull[i].x << ", "
-		<< hull[i].y << ")\n";
 
 
 	return 0;
