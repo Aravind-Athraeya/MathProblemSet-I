@@ -1,0 +1,124 @@
+// ConsoleApplication2.cpp : Defines the entry point for the console application.
+//
+#include "stdafx.h"
+#include <set>
+#include <iostream>
+#include<conio.h>
+#include <sstream>
+#include<stdio.h>
+#include<stdlib.h>
+#include <queue>
+#include <unordered_set>
+
+using namespace std;
+// Convexc Hull
+//Jarvis March Algorithm -- 
+
+// Step 1 - Find left most point and start from there
+// Step 2 - Proceed counter clockwise - As in - from the points perspective - Look for the left side from a stright line  --https://www.youtube.com/watch?v=Vu84lmMzP2o
+// Step 3 - Add ot the lsit and If cpollinear points - Just incldue
+// Step 4 -  Matrix dot product
+
+
+
+struct Point
+{
+	int x, y;
+
+};
+
+
+
+// 0 --> p, q and r are colinear 
+// 1 --> Clockwise 
+// 2 --> Counterclockwise
+int orientation(Point p, Point q, Point r)
+{
+	// Matrix dot product  - Angle between two vectors ab and ac.
+	// Yaengle  = Kuppy Rocks! ; Flip x and y for the second half
+	// (qp)y * (rq)x - (qp)x * (rq)y
+	int val = (q.y - p.y) * (r.x - q.x) -
+		(q.x - p.x) * (r.y - q.y);
+
+	if (val == 0) return 0;  // colinear 
+	return (val > 0) ? 1 : 2; // clock or counterclock wise 
+
+}
+
+vector<Point> convexHull(Point points[], int n)
+{
+
+	// Step 1  - find theelft most point
+	int left = 0;
+
+	vector<Point> ConvexHull;
+
+
+
+	for (int i = 1; i < n; i++)
+	if (points[i].x < points[left].x)
+		left = i;
+	ConvexHull.push_back(points[left]);
+	// Step 2
+	Point current = points[left];
+	while (true) {
+		
+		Point nextTarget = points[0]; //Choose a random point
+
+	
+		//Three points are current, next , iterative point
+		for (int i = 1; i < n; i++) {
+			if ((current.x == points[i].x) && (current.y == points[i].y))     //when selected point is current point, ignore rest part
+				continue;
+
+			int val = orientation(current, nextTarget, points[i]);
+
+		//	The next target q is the point such that the triplet(p, q, r) is counterclockwise for any other point r
+
+			if (val == 2) //// If i is more counterclockwise than current q, then 
+           // update nextTarget 
+			{		     
+				nextTarget = points[i];
+			}
+			
+		}
+
+		 // Make next as the current now
+
+		current = nextTarget;
+		ConvexHull.push_back(current);
+
+		// break
+		if  ((current.x == points[left].x) && (current.y == points[left].y)) // By the first iteration current wont be the left most
+			break;
+		// Hull completed
+	}
+
+
+
+	return ConvexHull;
+}
+
+
+
+int main()
+{
+
+	Point points[] = { { 0, 3 }, { 2, 2 }, { 1, 1 }, { 2, 1 },
+	{ 3, 0 }, { 0, 0 }, { 3, 3 } };
+
+	int n = sizeof(points) / sizeof(points[0]);
+	vector<Point> hull = convexHull(points, n);
+
+
+	// Print Result 
+	for (int i = 0; i < hull.size(); i++)
+		cout << "(" << hull[i].x << ", "
+		<< hull[i].y << ")\n";
+
+
+	return 0;
+
+
+
+}
