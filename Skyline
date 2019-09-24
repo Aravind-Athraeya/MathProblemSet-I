@@ -1,0 +1,35 @@
+// ConsoleApplication2.cpp : Defines the entry point for the console application.
+//
+#include "stdafx.h"
+#include <set>
+#include <iostream>
+#include<conio.h>
+#include <sstream>
+#include<stdio.h>
+#include<stdlib.h>
+#include <queue>
+#include <unordered_set>
+
+using namespace std;
+// https://www.youtube.com/watch?v=GSBLe8cKu0s
+
+// Step 1 - Sort by all x coordinates
+// Step 2 - Have a priority queue
+// Step 3 - if start,Add to Queue and Priority queue max value change - > Add to output for skyline(x,y)
+// Step 4 - if end, remove from queue and Priority queue max value change - > Add to output for skyline(x,high value in Queue)
+// Step 5 - Handle the three edge cases a) When two builds start together . Check the tall one first. b) When two builds end together . Check the short one first. c) Consecutive building. Check the tall one first.
+
+struct Point
+{
+	int x, y;
+
+};
+
+
+
+int main()
+{
+
+	return 0;
+
+}
