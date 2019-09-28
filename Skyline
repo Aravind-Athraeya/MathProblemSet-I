@@ -19,17 +19,35 @@ using namespace std;
 // Step 4 - if end, remove from queue and Priority queue max value change - > Add to output for skyline(x,high value in Queue)
 // Step 5 - Handle the three edge cases a) When two builds start together . Check the tall one first. b) When two builds end together . Check the short one first. c) Consecutive building. Check the tall one first.
 
-struct Point
+struct Building
 {
-	int x, y;
-
+	int left;  // x coordinate of left side 
+	int ht;    // height 
+	int right; // x coordinate of right side 
 };
 
+void Skyline(Building arr[], int l, int h)
+{
+
+	std::priority_queue<int> q;
+
+
+
+
+	// Handle Three edge cases
+
+}
 
 
 int main()
 {
 
+	Building arr[] = { { 1, 11, 5 }, { 2, 6, 7 }, { 3, 13, 9 },
+	{ 12, 7, 16 }, { 14, 3, 25 }, { 19, 18, 22 },
+	{ 23, 13, 29 }, { 24, 4, 28 } };
+	int n = sizeof(arr) / sizeof(arr[0]);
+
+	Skyline(arr, 0, n - 1);
 	return 0;
 
 }
