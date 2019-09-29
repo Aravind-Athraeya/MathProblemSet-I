@@ -43,11 +43,12 @@ void Skyline(Building building[], int l, int count)
 {
 
 	std::priority_queue<int> q;
+	multiset<int> m;
 	BuildingPoint BuildingPointList[5 * 2];
 	int bpIndex = 0;
 	for (int i = 0; i <= count; i++)
 	{
-	
+
 		BuildingPoint bpstart;
 		bpstart.x = building[i].start;
 		bpstart.isStart = true;
@@ -70,56 +71,81 @@ void Skyline(Building building[], int l, int count)
 
 	// Manipulate the Queue with Buildpoints
 	int prevMaxHeight = 0;
-	vector<pair<int, int>> result;
-	q.push(prevMaxHeight);// For initial rfefernce
+	vector<pair<pair<int, int>,bool>> result;
+	m.insert(prevMaxHeight);
 	for (BuildingPoint buildingPoint : BuildingPointList) {
 
 
 		if (buildingPoint.isStart)
 		{
 			// Start and if height change. Add to result
-			q.push(buildingPoint.height);
+			//q.push(buildingPoint.height);
+			m.insert(buildingPoint.height);
 
 		}
 		else
 		{
-			q.pop(); //Removes the end element height from the queue not the top element from the queue
+			//q.pop(); //Removes the end element height from the queue not the top element from the queue
 			// We only need to remove the height corresponging to the end of the building and not remove the top
-
+			m.erase(m.find(buildingPoint.height));
 		}
-		if (!q.empty())
-		{
 
-		int currentMaxHeight = q.top();
+
+		int currentMaxHeight = *m.rbegin();
 		if (prevMaxHeight != currentMaxHeight) {
-			result.push_back(std::make_pair(buildingPoint.x, currentMaxHeight));
+			result.push_back(std::make_pair(std::make_pair(buildingPoint.x, currentMaxHeight), buildingPoint.isStart));
 			prevMaxHeight = currentMaxHeight;
 		}
-	    }
+
 
 	}
 
 
 	// Handle Three edge cases
 
-	for (auto& p : result)
+
+
+	for (int i = 1; i < result.size(); i++)
 	{
+	
+		// a) When two builds start together, take the highest one
+		// Since it is sorted  by X, you can compare first with first -
+		if (result[i - 1].second  &&  result[i].second && (result[i - 1].first.first == result[i].first.first))
+		{	
+			if (result[i - 1].first.second > result[i].first.second)
+				result.erase(result.begin() + i);
+			else
+				result.erase(result.begin() + i - 1);
+	
+		}
 
-		 // a) When two builds start together
+		// b) When two builds end together,, take the lowest one
+		if (!result[i - 1].second  &&  !result[i].second && (result[i - 1].first.first == result[i].first.first))
+		{
+			if (result[i - 1].first.second > result[i].first.second)			
+			   result.erase(result.begin() + i - 1);
+			else
+				result.erase(result.begin() + i);
 
-
-
-		// b) When two builds end together
-
-
+		}
 
 		// c) Consecutive building.Check the tall one first.
+		//This code can be merged with a)  But keeping it seperate for readbility
+		if ((!result[i - 1].second == result[i].second) && (result[i - 1].first.first == result[i].first.first))
+		{
+			if (result[i - 1].first.second > result[i].first.second)
+				result.erase(result.begin() + i);
+			else
+				result.erase(result.begin() + i - 1);
 
-		std::cout << p.first << ", " << p.second << std::endl;
-		// or std::cout << std::get<0>(p) << ", " << std::get<1>(p) << std::endl;
+		}
+
 	}
-
-
+	
+	for (auto& p : result)
+	{
+		std::cout << p.first.first << ", " << p.first.second << std::endl;
+	}
 
 }
 
